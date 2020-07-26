@@ -22,16 +22,19 @@
 
 
 <div class="container-fluid">
-    <div class="col-md-3">
+    <div class="col-md">
         <div class="card-body">
             <form action="" method="POST">
                 {% csrf_token %}
-            
-                {% for field in form %}
-                    <p>{{field.label}} :
-                    {{field}}</p>
+
+                {{ formset.management_form }}
+                {% for form in formset %}
+
+                {{form}}
+                <hr>
+
                 {% endfor %}
-            
+
                 <button type="submit" class="btn btn-primary">Submit</button>
                 <button type="reset" class="btn btn-danger">Reset</button>
             </form>
