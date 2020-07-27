@@ -4,7 +4,7 @@ from accounts.models import Order, Customer, Product
 from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
-
+from django.contrib.auth.decorators import login_required
 from .forms import OrderForm, CreateUserForm
 
 # Create your views here.
@@ -36,6 +36,7 @@ def logout_user(request):
     logout(request)
     return redirect('/')
 
+@login_required(login_url='login')
 def home(request):
     orders = Order.objects.all()
     customers = Customer.objects.all()
@@ -55,6 +56,7 @@ def home(request):
 
     return render(request, 'accounts/index.html', context)
 
+@login_required(login_url='login')
 def customer(request, pk):
     customer = Customer.objects.get(id=pk)
     orders = customer.order_set.all()
@@ -67,6 +69,7 @@ def customer(request, pk):
     return render(request, 'accounts/customer.html', context)
 
     
+@login_required(login_url='login')
 def products(request):
     products = Product.objects.all()
     context ={
@@ -74,6 +77,7 @@ def products(request):
     }
     return render(request, 'accounts/products.html',context)
 
+@login_required(login_url='login')
 def create_order(request, pk):
     OrderFormSet = inlineformset_factory(Customer, Order, fields=('product','status'), extra=5) #extra is here to add multiple orders a same time. Extra shows how much empty fields at a single time display
     customer = Customer.objects.get(id=pk)
@@ -90,6 +94,7 @@ def create_order(request, pk):
     context ={'formset' : formset}  #used formset here for multiple forms. Use *form* in context instead of formset and in order_form.html also to use a single form
     return render(request, 'accounts/order_form.html', context)
 
+@login_required(login_url='login')
 def update_order(request, pk):
     order = Order.objects.get(id=pk)
     form = OrderForm(instance=order)
@@ -102,6 +107,7 @@ def update_order(request, pk):
     context = {'form': form}
     return render(request, 'accounts/order_form.html',context)
 
+@login_required(login_url='login')
 def delete_order(request, pk):
     order = Order.objects.get(id=pk)
     order.delete()
